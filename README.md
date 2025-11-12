@@ -74,7 +74,12 @@
 2. Generar historias de usuario y criterios de aceptación para cada vista.
 3. Configurar el repositorio con plantillas de issues, PRs y pipelines mínimos.
 
-## 7. Referencias internas
+## 7. Requisitos de entorno
+- **Versión de Python:** 3.9.6 (usa `pyenv` o la herramienta de tu preferencia para fijar la versión exacta).
+- **Instalación de dependencias:** ejecuta `pip install -e '.[dev]'` dentro de un entorno virtual basado en Python 3.9.6.
+- **Ejecución de pruebas rápidas:** `pytest backend/tests/test_health.py` valida la disponibilidad del endpoint de salud configurado en FastAPI.
+
+## 8. Referencias internas
 - `Modelo_ER.jpg`: base conceptual del esquema relacional a depurar.
 - `contratos.jpg`: funcionalidad futura opcional que puede integrarse tras la Fase 6.
 
