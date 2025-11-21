@@ -16,9 +16,9 @@ class DashboardFiltro(BaseModel):
 
     fecha_desde: Optional[date] = Field(default=None, description="Fecha inicial del rango")
     fecha_hasta: Optional[date] = Field(default=None, description="Fecha final del rango")
-    categoria_ids: list[int] | None = Field(default=None, description="Categorías a incluir")
-    tipo_ids: list[int] | None = Field(default=None, description="Tipos de movimiento a incluir")
-    metodo_pago_ids: list[int] | None = Field(default=None, description="Métodos de pago a incluir")
+    categoria_ids: Optional[list[int]] = Field(default=None, description="Categorías a incluir")
+    tipo_ids: Optional[list[int]] = Field(default=None, description="Tipos de movimiento a incluir")
+    metodo_pago_ids: Optional[list[int]] = Field(default=None, description="Métodos de pago a incluir")
     solo_gastos_fijos: Optional[bool] = Field(
         default=None, description="Limitar a gastos marcados como fijos"
     )
@@ -34,9 +34,9 @@ class DashboardSummary(BaseModel):
     total_ingresos: float
     balance_neto: float
     gasto_medio_mensual: float
-    variacion_mensual_porcentaje: float | None
-    proyeccion_saldo_30d: float | None
-    proyeccion_saldo_60d: float | None
+    variacion_mensual_porcentaje: Optional[float]
+    proyeccion_saldo_30d: Optional[float]
+    proyeccion_saldo_60d: Optional[float]
 
 
 class DashboardMonthlyPoint(BaseModel):
@@ -51,7 +51,7 @@ class DashboardMonthlyPoint(BaseModel):
 class DashboardCategoryPoint(BaseModel):
     """Distribución de importes por categoría."""
 
-    categoria_id: int | None
+    categoria_id: Optional[int]
     categoria_nombre: str
     total_importe: float
     total_gastos: float

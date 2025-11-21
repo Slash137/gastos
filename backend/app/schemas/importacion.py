@@ -69,7 +69,7 @@ class CsvAnalysisResult(BaseModel):
     sample: list[dict[str, Any]]
     suggested_mapping: Optional[ColumnMapping] = None
     warnings: list[str] = Field(default_factory=list)
-    separator: str | None = None
+    separator: Optional[str] = None
 
 
 class CsvPreviewRow(BaseModel):
