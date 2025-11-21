@@ -1,25 +1,14 @@
-"""Punto de entrada de la aplicación FastAPI.
-
-En esta etapa inicial ensamblamos la instancia principal y registramos
-routers especializados, lo que permitirá escalar el backend manteniendo
-una separación clara por dominios.
-"""
+"""Punto de entrada de la aplicación FastAPI."""
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-from backend.app.routers import health_router
+from backend.app.api import categorias, dashboard, health, importacion, metodos_pago, movimientos, reglas, tipos
+from backend.app.core.database import Base, engine
 
 
 def create_app() -> FastAPI:
-    """Crear y configurar la instancia principal de FastAPI.
-
-    La función encapsula la creación de la aplicación para facilitar
-    futuras tareas de testing y permitir que los distintos entornos
-    (desarrollo, producción) ajusten parámetros sin duplicar código.
-
-    Returns:
-        FastAPI: instancia configurada de la aplicación.
-    """
+    """Crear y configurar la instancia principal de FastAPI."""
 
     app = FastAPI(
         title="Gastos API",
@@ -30,9 +19,24 @@ def create_app() -> FastAPI:
         version="0.1.0",
     )
 
-    # Registramos las rutas de salud en la aplicación principal. A futuro se
-    # añadirá el resto de routers (movimientos, categorías, etc.).
-    app.include_router(health_router)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+    Base.metadata.create_all(bind=engine)
+
+    app.include_router(health.router)
+    app.include_router(importacion.router)
+    app.include_router(movimientos.router)
+    app.include_router(categorias.router)
+    app.include_router(tipos.router)
+    app.include_router(metodos_pago.router)
+    app.include_router(reglas.router)
+    app.include_router(dashboard.router)
 
     return app
 
