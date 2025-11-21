@@ -4,13 +4,16 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
 
 from backend.app.core.database import Base, get_db
 from backend.app.main import create_app
-from backend.app.models import Categoria, MetodoPago, TipoMovimiento
+from backend.app.models import Categoria, MetodoPago, ReglaAutoCategoria, TipoMovimiento
 
 # Configuramos una base de datos en memoria para aislar las pruebas.
-engine_test = create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
+engine_test = create_engine(
+    "sqlite:///:memory:", connect_args={"check_same_thread": False}, poolclass=StaticPool
+)
 TestingSessionLocal = sessionmaker(bind=engine_test, autoflush=False, autocommit=False)
 
 
@@ -22,8 +25,11 @@ def override_get_db():
         db.close()
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(autouse=True)
 def setup_database():
+    """Reinicia la base de datos en memoria antes de cada prueba."""
+
+    Base.metadata.drop_all(bind=engine_test)
     Base.metadata.create_all(bind=engine_test)
     session = TestingSessionLocal()
     # Insertamos datos base para relaciones FK.
@@ -35,7 +41,6 @@ def setup_database():
     session.commit()
     session.close()
     yield
-    Base.metadata.drop_all(bind=engine_test)
 
 
 @pytest.fixture()
