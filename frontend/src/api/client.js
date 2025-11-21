@@ -9,4 +9,17 @@ export const fetcher = async (url) => {
   return data
 }
 
+export const patchMovimiento = async (id, payload) => {
+  const { data } = await api.patch(`/movimientos/${id}`, payload)
+  return data
+}
+
+export const exportMovimientosCsv = async (params) => {
+  const { data } = await api.get('/movimientos/export', {
+    params,
+    responseType: 'blob'
+  })
+  return data
+}
+
 export default api
