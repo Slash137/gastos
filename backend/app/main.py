@@ -1,12 +1,13 @@
 """Punto de entrada de la aplicación FastAPI.
 
-En esta etapa inicial exponemos un endpoint de salud básico que servirá
-para validar que la infraestructura del backend está correctamente
-configurada. A medida que el proyecto avance, este módulo se encargará
-de ensamblar routers, dependencias y configuraciones comunes.
+En esta etapa inicial ensamblamos la instancia principal y registramos
+routers especializados, lo que permitirá escalar el backend manteniendo
+una separación clara por dominios.
 """
 
 from fastapi import FastAPI
+
+from backend.app.routers import health_router
 
 
 def create_app() -> FastAPI:
@@ -29,16 +30,9 @@ def create_app() -> FastAPI:
         version="0.1.0",
     )
 
-    @app.get("/health", tags=["estado"], summary="Verificar estado del servicio")
-    async def healthcheck() -> dict[str, str]:
-        """Endpoint mínimo para confirmar la disponibilidad del backend.
-
-        La ruta devuelve un diccionario con un mensaje estático. Más
-        adelante podremos extender esta respuesta con información sobre
-        el estado de la base de datos o dependencias externas.
-        """
-
-        return {"status": "ok"}
+    # Registramos las rutas de salud en la aplicación principal. A futuro se
+    # añadirá el resto de routers (movimientos, categorías, etc.).
+    app.include_router(health_router)
 
     return app
 

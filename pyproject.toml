@@ -1,3 +1,9 @@
+[build-system]
+# Declaramos explícitamente el backend de construcción para evitar dependencias
+# implícitas y mejorar la compatibilidad con herramientas modernas.
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "gastos"
 version = "0.1.0"
@@ -17,6 +23,17 @@ dev = [
     "pytest>=8.2.0,<9.0.0",
     "httpx>=0.27.0,<0.28.0"
 ]
+
+[tool.setuptools]
+# Indicamos que el directorio raíz aloja los paquetes Python para asegurar su
+# inclusión al construir el proyecto.
+package-dir = {"" = "."}
+
+[tool.setuptools.packages.find]
+# Buscamos todos los subpaquetes bajo el espacio de nombres `backend` para que
+# queden disponibles tras la instalación editable.
+where = ["."]
+include = ["backend*", "backend"]
 
 [tool.uvicorn]
 app = "backend.app.main:app"
