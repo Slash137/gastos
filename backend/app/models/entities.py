@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import date
 from enum import Enum
+from typing import Optional
 
 from sqlalchemy import Boolean, CheckConstraint, Date, Enum as SqlEnum, Float, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -87,8 +88,8 @@ class Movimiento(Base):
     fecha: Mapped[date] = mapped_column(Date, nullable=False)
     concepto: Mapped[str] = mapped_column(String(255), nullable=False)
     importe: Mapped[float] = mapped_column(Float, nullable=False)
-    saldo: Mapped[float | None] = mapped_column(Float, nullable=True)
-    notas: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    saldo: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    notas: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
 
     tipo_id: Mapped[int] = mapped_column(ForeignKey("tipos_movimiento.id"), nullable=False)
     categoria_id: Mapped[int] = mapped_column(ForeignKey("categorias.id"), nullable=False)

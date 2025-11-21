@@ -7,6 +7,7 @@ pueda componer gráficos y KPIs al estilo de una herramienta BI ligera.
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends
+from typing import Optional
 from sqlalchemy.orm import Session
 
 from backend.app.core.database import get_db
@@ -23,13 +24,13 @@ router = APIRouter(prefix="/dashboard", tags=["dashboard"])
 
 
 def _extraer_filtros(
-    fecha_desde: str | None = None,
-    fecha_hasta: str | None = None,
-    categoria_ids: str | None = None,
-    tipo_ids: str | None = None,
-    metodo_pago_ids: str | None = None,
-    solo_gastos_fijos: bool | None = None,
-    solo_gastos_variables: bool | None = None,
+    fecha_desde: Optional[str] = None,
+    fecha_hasta: Optional[str] = None,
+    categoria_ids: Optional[str] = None,
+    tipo_ids: Optional[str] = None,
+    metodo_pago_ids: Optional[str] = None,
+    solo_gastos_fijos: Optional[bool] = None,
+    solo_gastos_variables: Optional[bool] = None,
 ) -> DashboardFiltro:
     """Convierte query params en un `DashboardFiltro` homogéneo.
 
@@ -38,7 +39,7 @@ def _extraer_filtros(
     opcionales.
     """
 
-    def _parse_lista(val: str | None) -> list[int] | None:
+    def _parse_lista(val: Optional[str]) -> Optional[list[int]]:
         if not val:
             return None
         return [int(item) for item in val.split(",") if item]
@@ -56,13 +57,13 @@ def _extraer_filtros(
 
 @router.get("/summary", response_model=DashboardSummary)
 def get_dashboard_summary(
-    fecha_desde: str | None = None,
-    fecha_hasta: str | None = None,
-    categoria_ids: str | None = None,
-    tipo_ids: str | None = None,
-    metodo_pago_ids: str | None = None,
-    solo_gastos_fijos: bool | None = None,
-    solo_gastos_variables: bool | None = None,
+    fecha_desde: Optional[str] = None,
+    fecha_hasta: Optional[str] = None,
+    categoria_ids: Optional[str] = None,
+    tipo_ids: Optional[str] = None,
+    metodo_pago_ids: Optional[str] = None,
+    solo_gastos_fijos: Optional[bool] = None,
+    solo_gastos_variables: Optional[bool] = None,
     db: Session = Depends(get_db),
 ) -> DashboardSummary:
     """Calcula los KPIs principales del dashboard."""
@@ -81,13 +82,13 @@ def get_dashboard_summary(
 
 @router.get("/monthly", response_model=list[DashboardMonthlyPoint])
 def get_dashboard_monthly(
-    fecha_desde: str | None = None,
-    fecha_hasta: str | None = None,
-    categoria_ids: str | None = None,
-    tipo_ids: str | None = None,
-    metodo_pago_ids: str | None = None,
-    solo_gastos_fijos: bool | None = None,
-    solo_gastos_variables: bool | None = None,
+    fecha_desde: Optional[str] = None,
+    fecha_hasta: Optional[str] = None,
+    categoria_ids: Optional[str] = None,
+    tipo_ids: Optional[str] = None,
+    metodo_pago_ids: Optional[str] = None,
+    solo_gastos_fijos: Optional[bool] = None,
+    solo_gastos_variables: Optional[bool] = None,
     db: Session = Depends(get_db),
 ) -> list[DashboardMonthlyPoint]:
     """Serie mensual de gastos, ingresos y balance."""
@@ -106,13 +107,13 @@ def get_dashboard_monthly(
 
 @router.get("/by-category", response_model=list[DashboardCategoryPoint])
 def get_dashboard_by_category(
-    fecha_desde: str | None = None,
-    fecha_hasta: str | None = None,
-    categoria_ids: str | None = None,
-    tipo_ids: str | None = None,
-    metodo_pago_ids: str | None = None,
-    solo_gastos_fijos: bool | None = None,
-    solo_gastos_variables: bool | None = None,
+    fecha_desde: Optional[str] = None,
+    fecha_hasta: Optional[str] = None,
+    categoria_ids: Optional[str] = None,
+    tipo_ids: Optional[str] = None,
+    metodo_pago_ids: Optional[str] = None,
+    solo_gastos_fijos: Optional[bool] = None,
+    solo_gastos_variables: Optional[bool] = None,
     db: Session = Depends(get_db),
 ) -> list[DashboardCategoryPoint]:
     """Distribución de importes por categoría para gráficas de pastel."""
@@ -131,13 +132,13 @@ def get_dashboard_by_category(
 
 @router.get("/yearly", response_model=list[DashboardYearPoint])
 def get_dashboard_yearly(
-    fecha_desde: str | None = None,
-    fecha_hasta: str | None = None,
-    categoria_ids: str | None = None,
-    tipo_ids: str | None = None,
-    metodo_pago_ids: str | None = None,
-    solo_gastos_fijos: bool | None = None,
-    solo_gastos_variables: bool | None = None,
+    fecha_desde: Optional[str] = None,
+    fecha_hasta: Optional[str] = None,
+    categoria_ids: Optional[str] = None,
+    tipo_ids: Optional[str] = None,
+    metodo_pago_ids: Optional[str] = None,
+    solo_gastos_fijos: Optional[bool] = None,
+    solo_gastos_variables: Optional[bool] = None,
     db: Session = Depends(get_db),
 ) -> list[DashboardYearPoint]:
     """Agregación anual de gastos/ingresos/balance."""

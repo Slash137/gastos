@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Iterable
+from typing import Iterable, Optional
 
 from sqlalchemy import and_, asc, case, desc, func, or_, select
 from sqlalchemy.orm import Session
@@ -77,7 +77,7 @@ def _query_base_movimientos():
     )
 
 
-def _aplicar_ordenacion(query, sort_by: str | None, sort_dir: str | None):
+def _aplicar_ordenacion(query, sort_by: Optional[str], sort_dir: Optional[str]):
     """Añade ordenación segura a la consulta, limitando los campos permitidos."""
 
     direcciones = {"asc": asc, "desc": desc}
@@ -171,11 +171,11 @@ def _calcular_agregados(db: Session, filtros: MovimientoFiltro) -> MovimientoAgg
 
 def listar_movimientos(
     db: Session,
-    filtros: MovimientoFiltro | None = None,
+    filtros: Optional[MovimientoFiltro] = None,
     page: int = 1,
     page_size: int = 50,
-    sort_by: str | None = None,
-    sort_dir: str | None = None,
+    sort_by: Optional[str] = None,
+    sort_dir: Optional[str] = None,
 ) -> MovimientoListResponse:
     """Obtiene movimientos aplicando filtros, paginación y agregados.
 

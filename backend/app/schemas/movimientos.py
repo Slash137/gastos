@@ -50,9 +50,9 @@ class MovimientoFiltro(BaseModel):
 
     fecha_desde: Optional[date] = None
     fecha_hasta: Optional[date] = None
-    categoria_ids: list[int] | None = Field(default=None, description="Listado de categorías a incluir")
-    tipo_ids: list[int] | None = None
-    metodo_pago_ids: list[int] | None = None
+    categoria_ids: Optional[list[int]] = Field(default=None, description="Listado de categorías a incluir")
+    tipo_ids: Optional[list[int]] = None
+    metodo_pago_ids: Optional[list[int]] = None
     importe_min: Optional[float] = None
     importe_max: Optional[float] = None
     concepto: Optional[str] = None
@@ -69,16 +69,16 @@ class MovimientoListItem(BaseModel):
     fecha: date
     concepto: str
     importe: float
-    saldo: float | None
+    saldo: Optional[float]
     tipo_id: int
     tipo_nombre: str
-    categoria_id: int | None
-    categoria_nombre: str | None
-    categoria_es_fijo: bool | None
-    metodo_pago_id: int | None
-    metodo_pago_nombre: str | None
-    notas: str | None
-    mes_anio: str | None = None
+    categoria_id: Optional[int]
+    categoria_nombre: Optional[str]
+    categoria_es_fijo: Optional[bool]
+    metodo_pago_id: Optional[int]
+    metodo_pago_nombre: Optional[str]
+    notas: Optional[str]
+    mes_anio: Optional[str] = None
 
 
 class MovimientoAggregates(BaseModel):
@@ -88,7 +88,7 @@ class MovimientoAggregates(BaseModel):
     total_importe: float
     total_gastos: float
     total_ingresos: float
-    promedio_mensual: float | None = None
+    promedio_mensual: Optional[float] = None
 
 
 class MovimientoListResponse(BaseModel):

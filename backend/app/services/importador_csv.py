@@ -10,7 +10,7 @@ from __future__ import annotations
 import csv
 import io
 from datetime import date, datetime
-from typing import Iterable, Tuple
+from typing import Iterable, Optional, Tuple
 
 import pandas as pd
 from sqlalchemy.orm import Session
@@ -73,7 +73,7 @@ def _detect_separator(sample: str) -> str:
 def _read_csv_bytes(file_bytes: bytes) -> Tuple[pd.DataFrame, str]:
     """Lee el CSV intentando codificaciones comunes y detectando separador."""
 
-    last_error: Exception | None = None
+    last_error: Optional[Exception] = None
     for encoding in ("utf-8", "latin-1"):
         try:
             sample = file_bytes[:1024].decode(encoding, errors="ignore")
@@ -87,7 +87,7 @@ def _read_csv_bytes(file_bytes: bytes) -> Tuple[pd.DataFrame, str]:
     raise ValueError(f"No se pudo leer el CSV: {last_error}")
 
 
-def _suggest_mapping(columns: Iterable[str]) -> ColumnMapping | None:
+def _suggest_mapping(columns: Iterable[str]) -> Optional[ColumnMapping]:
     """Sugiere un mapeo de columnas basado en heurísticas simples."""
 
     cols = [c.lower() for c in columns]
@@ -136,7 +136,7 @@ def analyze_csv(file_bytes: bytes) -> CsvAnalysisResult:
     )
 
 
-def _parse_float(value) -> float | None:
+def _parse_float(value) -> Optional[float]:
     """Convierte cadenas con coma o punto decimal a float."""
 
     if pd.isna(value):
@@ -154,7 +154,7 @@ def _parse_float(value) -> float | None:
         return None
 
 
-def _parse_date(value, override_format: str | None, candidatos: tuple[str, ...]) -> date | None:
+def _parse_date(value, override_format: Optional[str], candidatos: tuple[str, ...]) -> Optional[date]:
     """Parsea la fecha usando formatos sugeridos o el override indicado."""
 
     if pd.isna(value):
@@ -187,7 +187,7 @@ def _normalize_concept(value: str, limpiar: bool) -> str:
 
 
 def _buscar_duplicado(
-    db: Session, fecha: date | None, concepto_norm: str, importe: float | None
+    db: Session, fecha: Optional[date], concepto_norm: str, importe: Optional[float]
 ) -> bool:
     """Comprueba si ya existe un movimiento con misma fecha, concepto e importe."""
 
@@ -214,7 +214,7 @@ def _build_preview_rows(
     error_rows = 0
     duplicate_rows = 0
     formatos_candidatos = BANK_DATE_FORMATS.get(formato, ("%Y-%m-%d",))
-    vistos: set[tuple[date | None, str, float | None]] = set()
+    vistos: set[tuple[Optional[date], str, Optional[float]]] = set()
 
     for idx, raw in df.iterrows():
         errores: list[str] = []
@@ -318,7 +318,7 @@ def apply_import(
     mapping: ColumnMapping,
     options: ImportOptions,
     db: Session,
-    user_id: int | None = None,
+    user_id: Optional[int] = None,
 ) -> CsvImportResult:
     """Importa definitivamente los movimientos válidos y no duplicados."""
 
