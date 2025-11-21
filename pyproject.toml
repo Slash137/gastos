@@ -1,7 +1,8 @@
 [build-system]
 # Declaramos explícitamente el backend de construcción para evitar dependencias
-# implícitas y mejorar la compatibilidad con herramientas modernas.
-requires = ["setuptools>=68", "wheel"]
+# implícitas y mejorar la compatibilidad con herramientas modernas. Reducimos
+# la restricción de versión para soportar entornos sin acceso a PyPI.
+requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -15,13 +16,19 @@ readme = "README.md"
 requires-python = ">=3.9.6,<3.10"
 dependencies = [
     "fastapi>=0.110.0,<0.112.0",
-    "uvicorn[standard]>=0.29.0,<0.31.0"
+    "uvicorn[standard]>=0.29.0,<0.31.0",
+    "sqlalchemy>=2.0.0,<2.1.0",
+    "pandas>=2.2.0,<2.3.0",
+    "python-multipart>=0.0.9",
+    "pydantic-settings>=2.2.0,<2.3.0",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=8.2.0,<9.0.0",
-    "httpx>=0.27.0,<0.28.0"
+    "httpx>=0.27.0,<0.28.0",
+    "ruff>=0.4.0",
+    "black>=24.3.0",
 ]
 
 [tool.setuptools]
@@ -40,3 +47,12 @@ app = "backend.app.main:app"
 host = "0.0.0.0"
 port = 8000
 reload = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+select = ["E", "F", "B", "I"]
+
+[tool.black]
+line-length = 100
+target-version = ["py39"]
